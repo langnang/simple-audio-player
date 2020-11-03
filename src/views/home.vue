@@ -51,9 +51,7 @@
             {{ audio.author }}
           </div>
           <!--音频信息：歌词 -->
-          <el-scrollbar style="height:calc(100vh - 275px)">
-            <AudioLyric :lyric="audio.lyric" :current-time="currentTime"/>
-          </el-scrollbar>
+          <AudioLyric :lyric="audio.lyric" :current-time="currentTime"/>
         </div>
       </el-col>
       <el-col :span="24" class="audio-player-container">
@@ -72,7 +70,6 @@
 import AudioPlayer from '@/components/AudioPlayer'
 import AudioLyric from '@/components/AudioLyric'
 import {mapGetters} from 'vuex'
-import audio from "../store/modules/audio";
 
 export default {
   components: {
@@ -101,9 +98,7 @@ export default {
       this.$refs.player.currentIndex = _index;
     },
     onBeforePlay() {
-      console.log("onBeforePlay");
-      console.log(audio.src);
-      if (!audio.src) {
+      if (!this.audio.src) {
         this.$store.commit('audio/SET_ITEM', this.audio_list[0])
       }
     },

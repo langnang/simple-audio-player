@@ -11,6 +11,13 @@
       padding: 8px 0;
 
     }
+
+    .cell {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+    }
   }
 
   .el-table__body-wrapper {

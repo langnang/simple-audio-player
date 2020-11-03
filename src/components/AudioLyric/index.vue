@@ -2,12 +2,14 @@
   <div class="audio-lyric">
     <!--音频信息：歌词 -->
     <div class="audio-info__lyric">
-      <ul class="audio-info__lyric-group" style="list-style: none;">
-        <li class="audio-info__lyric-item" v-for="(l,index) in split_lyric" :key="index"
-            :class="{active:index==currentIndex}">
-          {{l.lyric}}
-        </li>
-      </ul>
+      <el-scrollbar ref="lyricScrollbar" style="height:calc(100vh - 275px)">
+        <ul ref="lyric" class="audio-info__lyric-group" style="list-style: none;">
+          <li class="audio-info__lyric-item" v-for="(l,index) in split_lyric" :key="index"
+              :class="{active:index==currentIndex}">
+            {{l.lyric}}
+          </li>
+        </ul>
+      </el-scrollbar>
     </div>
   </div>
 </template>
@@ -30,7 +32,9 @@ export default {
   },
   computed: {
     split_lyric() {
-      return this.lyric.split("\n").reduce((total, value) => {
+      const lyricArray = [];
+      this.lyric.split(/\n/).forEach(value => {
+        // console.log(v.match(/\[\d{2}:\d{2}.\d{2,3}\]/))
         const item = {
           start: null,
           lyric: value,
@@ -43,15 +47,24 @@ export default {
           item.start += parseInt(value.substr(7, 2)) * 0.01;
           item.lyric = item.lyric.substr(10)
         }
-        total.push(item)
-        return total;
-      }, [])
+        lyricArray.push(item)
+      })
+      console.log(lyricArray);
+      return lyricArray;
     },
     currentIndex() {
-      return this.split_lyric.filter(v => v.start < this.currentTime).length;
+      const index = this.split_lyric.findIndex(v => v.start > this.currentTime);
+      return index - 1;
     },
   },
-  methods: {}
+  methods: {},
+  watch: {
+    currentIndex: function (val) {
+      console.log(this.$refs);
+      console.log(val);
+      this.$refs.lyric.style.transform = `translateY(${330 - (25 * (val + 1))}px)`
+    }
+  }
 }
 </script>
 
@@ -70,6 +83,10 @@ export default {
       border-radius: 50%;
     }
   }
+}
+
+.audio-info__lyric-group {
+  transition: transform 1s;
 }
 
 .audio-info__lyric-item {
