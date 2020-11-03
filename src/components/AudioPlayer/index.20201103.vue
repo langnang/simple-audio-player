@@ -2,9 +2,8 @@
   <div class="audio-player">
     <!--音频控件-->
     <div class="audio-controls">
-      <slot name="before-start"></slot>
       <!--音频控件：上一首-->
-      <div v-if="showPrev" class="audio-controls__previous" @click="$emit('play-prev')" title="上一首">
+      <div class="audio-controls__previous" @click="playPrev" title="上一首">
         <svg t="1604247544322" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
              p-id="927" width="200" height="200">
           <path
@@ -14,11 +13,11 @@
       </div>
       <!--音频控件：开始-->
       <div class="audio-controls__start" v-if="!isPlaying" @click="play" title="播放">
-        <svg t="1604403365290" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-             p-id="3249" width="200" height="200">
+        <svg t="1604247462626" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+             p-id="8660" width="200" height="200">
           <path
-            d="M512 78.8c-239.3 0-433.2 194-433.2 433.2 0 239.3 194 433.2 433.2 433.2 239.3 0 433.2-194 433.2-433.2 0.1-239.2-193.9-433.2-433.2-433.2z m183.3 447.9L455.1 720c-12.3 9.9-30.5 1.1-30.5-14.6V318.7c0-15.7 18.2-24.5 30.5-14.6l240.2 193.4c9.4 7.5 9.4 21.7 0 29.2z"
-            p-id="3250"></path>
+            d="M897.143467 597.051733l-464.648534 311.5264c-46.976 31.488-110.592 18.944-142.08-28.023466A102.4 102.4 0 0 1 273.066667 823.5264V200.4736c0-56.5504 45.8496-102.4 102.4-102.4a102.4 102.4 0 0 1 57.028266 17.348267l464.64 311.5264c46.976 31.488 59.528533 95.104 28.032 142.08a102.4 102.4 0 0 1-28.023466 28.023466z"
+            p-id="8661"></path>
         </svg>
       </div>
       <!--音频控件：暂停-->
@@ -31,7 +30,7 @@
         </svg>
       </div>
       <!--音频控件：下一首-->
-      <div v-if="showNext" class="audio-controls__next" @click="$emit('play-next')" title="下一首">
+      <div class="audio-controls__next" @click="playNext" title="下一首">
         <svg t="1604247579325" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
              p-id="1217" width="200" height="200">
           <path
@@ -39,10 +38,9 @@
             p-id="1218"></path>
         </svg>
       </div>
-      <slot name="before-time"></slot>
+
       <!--音频信息：当前播放位置/音频长度-->
       <div class="audio-controls__time">{{mm_ss(currentTime)}} / {{mm_ss(duration)}}</div>
-      <slot name="before-progress"></slot>
       <!--音频控件：当前播放进度-->
       <div class="audio-controls__progress" @click="onClickProgress">
         <!--音频信息：缓冲-->
@@ -55,12 +53,55 @@
           </svg>
         </div>
 
-        <div ref="progress" class="audio-controls__progress-outer">
+        <div class="audio-controls__progress-outer">
           <div class="audio-controls__progress-inner" :style="{width:percentage+'%'}"></div>
           <div class="audio-controls__progress-point" :style="{left:percentage+'%'}"></div>
         </div>
       </div>
-      <slot name="before-volume"></slot>
+      <!--音频控件：单曲循环-->
+      <div class="audio-controls__single-loop" :class="{active:playMode==='single-loop'}"
+           @click="playMode='single-loop'" title="单曲循环">
+        <svg t="1604301890186" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+             p-id="5565" width="200" height="200">
+          <path
+            d="M911.788443 228.143992L684.489776 0.859776l-61.296945 61.30417 123.395866 123.38864H89.301065v327.921315h86.700064V272.252649h570.587568L623.192831 395.64129l61.296945 61.30417 227.298667-227.276992-0.758626-0.76585zM783.428999 751.747351H229.133818l123.38864-123.381416-61.30417-61.31862-227.298666 227.284217 0.758625 0.758625-0.758625 0.758626 227.298666 227.291441 61.30417-61.311395-123.38864-123.381415h640.995244V513.871276h-86.700063z"
+            fill="#231815" p-id="5566"></path>
+          <path d="M445.681676 364.559317h86.700064v294.874141h-86.700064z" fill="#231815" p-id="5567"></path>
+        </svg>
+      </div>
+      <!--音频控件：列表播放-->
+      <div class="audio-controls__list" :class="{active:playMode==='list'}"
+           @click="playMode='list'" title="列表播放">
+        <svg t="1604306527698" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+             p-id="13436" width="200" height="200">
+          <path
+            d="M832 832a32 32 0 0 1 3.744 63.776L832 896H192a32 32 0 0 1-3.744-63.776L192 832h640z m0-304a32 32 0 0 1 3.744 63.776L832 592H192a32 32 0 0 1-3.744-63.776L192 528h640zM224.256 128.544a64 64 0 0 1 26.816 5.888L256 136.96l127.488 72.832a64 64 0 0 1 4.832 108.096l-4.8 3.04L256 393.824a64 64 0 0 1-95.52-50.016l-0.224-5.568V192.544a64 64 0 0 1 64-64z m0 64v145.696l127.488-72.864-127.488-72.832zM832 224a32 32 0 0 1 3.744 63.776L832 288H496a32 32 0 0 1-3.744-63.776L496 224H832z"
+            p-id="13437"></path>
+        </svg>
+      </div>
+      <!--音频控件：列表循环-->
+      <div class="audio-controls__list-loop" :class="{active:playMode==='list-loop'}"
+           @click="playMode='list-loop'" title="列表循环">
+        <svg t="1604306395716" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+             p-id="7277" width="200" height="200">
+          <path
+            d="M64.532459 511.40739a63.893258 63.893258 0 0 0 63.893259-63.893258V383.620873a63.893258 63.893258 0 0 1 63.893258-63.893258h612.736347l-83.061236 82.422303a63.893258 63.893258 0 0 0 0 90.728427 63.893258 63.893258 0 0 0 90.728427 0l191.679775-191.679775a63.893258 63.893258 0 0 0 0-90.728427l-191.679775-191.679775a63.893258 63.893258 0 0 0-90.728427 90.728427L805.055323 191.941098H192.318976a191.679775 191.679775 0 0 0-191.679775 191.679775v63.893259a63.893258 63.893258 0 0 0 63.893258 63.893258z"
+            fill="#383B48" p-id="7278"></path>
+          <path
+            d="M959.038076 511.40739a63.893258 63.893258 0 0 0-63.893258 63.893258v63.893259a63.893258 63.893258 0 0 1-63.893259 63.893258H218.515212l83.061236-81.783371a63.893258 63.893258 0 0 0 0-90.089494 63.893258 63.893258 0 0 0-90.728427 0l-191.679775 191.679775a63.893258 63.893258 0 0 0 0 90.728427l191.679775 191.679775a63.893258 63.893258 0 0 0 90.728427-91.36736L218.515212 830.873682H831.251559a191.679775 191.679775 0 0 0 191.679775-191.679775V575.300648a63.893258 63.893258 0 0 0-63.893258-63.893258z"
+            fill="#383B48" p-id="7279"></path>
+        </svg>
+      </div>
+      <!--音频控件：随机播放-->
+      <div class="audio-controls__random" :class="{active:playMode==='random'}"
+           @click="playMode='random'" title="随机播放">
+        <svg t="1604300800668" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+             p-id="5233" width="200" height="200">
+          <path
+            d="M912 311.9c0 4.1-1.3 7.6-4 10.2l-142.9 143c-2.7 2.7-6.1 4-10.2 4-3.8 0-7.2-1.4-10-4.2-2.8-2.8-4.2-6.2-4.2-10v-85.7H626.3c-14.3 0-27.2 2.3-38.9 6.7-11.6 4.5-21.9 11.2-30.8 20.1-8.9 8.9-16.5 18.1-22.7 27.4-6.3 9.4-13 20.9-20.1 34.6-9.5 18.5-21.1 43.9-34.8 76.3-8.6 19.6-16 36.2-22.1 49.6-6.1 13.4-14.2 29-24.1 46.9s-19.5 32.8-28.5 44.6c-9.1 11.9-20.1 24.2-33.1 37.1-13 12.8-26.4 23-40.2 30.6-13.8 7.6-29.7 13.8-47.5 18.8-17.8 4.9-36.9 7.3-57.2 7.3h-100c-4.1 0-7.6-1.3-10.2-4-2.7-2.6-4-6-4-10.1v-85.7c0-4.1 1.3-7.6 4-10.2 2.7-2.7 6.1-4 10.2-4h100c14.3 0 27.2-2.3 38.9-6.7 11.6-4.5 21.9-11.2 30.8-20.1 8.9-8.9 16.5-18.1 22.7-27.4 6.3-9.4 13-20.9 20.1-34.6 9.5-18.4 21.1-43.9 34.8-76.3 8.6-19.6 16-36.2 22.1-49.6 6.1-13.4 14.2-29 24.1-46.9 10-17.8 19.5-32.8 28.5-44.6 9.1-11.9 20.1-24.2 33.1-37.1 13-12.8 26.4-23 40.2-30.6 13.8-7.6 29.7-13.8 47.5-18.8 17.8-4.9 36.9-7.3 57.2-7.3h114.3v-85.7c0-4.1 1.3-7.6 4-10.2 2.7-2.7 6.1-4 10.2-4 3.6 0 7.1 1.5 10.7 4.5L908 301.9c2.7 2.4 4 5.9 4 10z m-502.7 43.3c-17.8 27.4-38.2 68-61.1 121.9-6.6-13.4-12-24.1-16.5-32.4-4.5-8.2-10.5-17.7-18.1-28.4-7.6-10.7-15.2-19.2-22.7-25.3-7.6-6.1-17-11.3-28.2-15.6-11.2-4.3-23.3-6.5-36.4-6.5h-99.9c-4.1 0-7.6-1.3-10.2-4-2.7-2.7-4-6.1-4-10.2V269c0-4.1 1.3-7.6 4-10.2 2.7-2.7 6.1-4 10.2-4h100c74.2-0.1 135.3 33.4 182.9 100.4zM912 711.9c0 4.1-1.3 7.6-4 10.2l-142.9 143c-2.7 2.7-6.1 4-10.2 4-3.8 0-7.2-1.4-10-4.2s-4.2-6.2-4.2-10v-85.7c-9.5 0-22.2 0.1-37.9 0.2-15.8 0.2-27.8 0.3-36.2 0.5-8.4 0.2-19.2 0-32.6-0.5s-23.9-1.2-31.7-2.3c-7.7-1-17.3-2.6-28.5-4.7-11.3-2.1-20.7-4.8-28.2-8.3-7.4-3.4-16.1-7.7-25.9-12.8-9.9-5.1-18.6-11-26.4-17.8-7.7-6.9-16-14.8-24.6-23.8-8.6-9.1-17-19.4-25-31 17.6-27.7 37.8-68.3 60.8-121.9 6.6 13.4 12 24.2 16.5 32.4s10.5 17.7 18.1 28.4c7.6 10.7 15.2 19.2 22.7 25.3 7.6 6.1 17 11.4 28.2 15.6 11.2 4.3 23.3 6.5 36.4 6.5h114.3v-85.7c0-4.1 1.3-7.6 4-10.2 2.7-2.7 6.1-4 10.2-4 3.6 0 7.1 1.5 10.7 4.5L908 702c2.7 2.3 4 5.8 4 9.9z"
+            p-id="5234"></path>
+        </svg>
+      </div>
       <!--音频控件：音量-->
       <div class="audio-controls__volume" title="音量">
         <svg t="1604298857042" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +110,7 @@
             d="M596 139c16.71 16.242 26 38.634 26 62v624c0 48.608-39.423 88-88 88-23.423 0-45.833-9.282-62-26L312.059 727.059A48 48 0 0 0 278.118 713H216c-70.657 0.295-128-57.003-128-128V441c0-70.338 57.343-127.636 128-128h61.198a48 48 0 0 0 33.844-13.962L472 139c34.021-34.576 89.774-34.604 124 0z m219.153 132.989C883.63 332.312 924 422.217 924 518.999c0 96.784-40.37 186.689-108.847 247.012-13.262 11.683-33.482 10.403-45.165-2.859-11.682-13.261-10.402-33.482 2.86-45.164C827.493 669.849 860 597.455 860 519s-32.507-150.85-87.152-198.988c-13.262-11.682-14.542-31.903-2.86-45.164 11.683-13.262 31.903-14.542 45.165-2.86z m-95.508 93.39C760.867 403.048 785 458.494 785 517.973c0 59.513-24.161 114.988-65.425 152.659-13.052 11.915-33.292 10.994-45.208-2.058-11.796-12.922-11.011-32.888 1.67-44.848l0.388-0.36 0.834-0.768C704.657 597.13 721 559.193 721 517.974c0-41.613-16.656-79.88-44.53-105.352-13.045-11.922-13.956-32.163-2.034-45.209 11.922-13.046 32.163-13.957 45.209-2.035z"
             fill="#333333" p-id="3803"></path>
         </svg>
-        <div ref="volume" class="audio-controls__volume-wrapper" @click="onClickVolume">
+        <div class="audio-controls__volume-wrapper" @click="onClickVolume">
           <div class="audio-controls__volume-outer">
             <div class="audio-controls__volume-inner" :style="{width:volume+'%'}">
             </div>
@@ -77,17 +118,18 @@
           </div>
         </div>
       </div>
-      <slot name="after-volume"></slot>
     </div>
     <!--音频播放器-->
     <audio
       ref="audio"
       class="audio-player__audio"
-      :src="src"
+      :src="audioList[currentIndex]"
+      @loadstart="onLoadStart"
       @progress="onProgress"
       @canplaythrough="onCanPlayThrough"
       @ended="onEnded"
       @timeupdate="onTimeUpdate"
+      @loadedmetadata="onLoadedmetadata"
     >
       您的浏览器不支持 audio 标签。
     </audio>
@@ -100,32 +142,18 @@ export default {
   components: {},
   props: {
     // 播放列表
-    src: {
-      type: String,
+    audioList: {
+      type: Array,
       default: null,
-    },
-    // 是否循环播放
-    loop: {
-      type: Boolean,
-      default: false,
-    },
-    // 是否显示上一首按钮
-    showPrev: {
-      type: Boolean,
-      default: false,
-    },
-    // 是否显示下一首按钮
-    showNext: {
-      type: Boolean,
-      default: false,
     },
   },
   data() {
     return {
+      audio: null,
       playMode: "list",// 播放模式：单曲循环，顺序播放，循环播放，随机播放
       currentIndex: 0, // 当前播放的音频位置索引
       isPlaying: false, // 音频是否正在播放
-      volume: 66, // 音频音量
+      volume: 100, // 音频音量
       currentTime: 0, // 音频当前播放位置
       duration: 0, // 音频长度
     }
@@ -136,17 +164,19 @@ export default {
     }
   },
   methods: {
+    // 随机播放
+    random() {
+      this.currentIndex = parseInt(Math.random() * this.audioList.length);
+    },
     // 调整音量
     onClickVolume(e) {
-      this.$refs.audio.volume = e.offsetX / this.$refs.volume.offsetWidth;
-      this.volume = this.$refs.audio.volume * 100;
-      this.$emit("volume-change", this.volume);
+      this.volume = e.offsetX;
+      this.$refs.audio.volume = this.volume / 100;
     },
     //调整进度
     onClickProgress(e) {
-      this.currentTime = e.offsetX / this.$refs.progress.offsetWidth * this.duration;
+      this.currentTime = e.offsetX / e.target.offsetWidth * this.duration;
       this.$refs.audio.currentTime = this.currentTime;
-      this.$emit("progress-change", this.volume);
     },
     // 秒转为分:秒
     mm_ss(val) {
@@ -154,16 +184,59 @@ export default {
     },
     // 播放
     play() {
-      this.$emit("before-play");
-      if (!this.src) return;
-      this.$refs.audio.play();
-      this.isPlaying = true;
+
+      const playHandler = () => {
+        this.$refs.audio.play();
+        this.$nextTick(() => {
+          this.isPlaying = true
+          this.$emit('play', this.currentIndex)
+        })
+      }
+      if (this.beforePlay) {
+        this.beforePlay((state) => {
+          if (state !== false) {
+            playHandler()
+          }
+          return;
+        });
+      }
+      playHandler();
     },
     // 暂停
     pause() {
-      this.$emit("before-pause");
-      this.$refs.audio.pause();
       this.isPlaying = false;
+      this.$refs.audio.pause();
+    },
+    // 上一首
+    playPrev() {
+      if (this.playMode === 'random') {
+        this.random();
+        return;
+      }
+      this.currentIndex--;
+      if (this.currentIndex < 0) {
+        this.currentIndex = this.audioList.length - 1;
+      }
+    },
+    // 下一首
+    playNext() {
+      if (this.playMode === 'random') {
+        this.random();
+        return;
+      }
+      this.currentIndex++;
+      if (this.currentIndex > this.audioList.length - 1) {
+
+        this.currentIndex = 0;
+      }
+    },
+    // 客户端开始请求数据
+    onLoadStart() {
+      this.audio = this.$refs.audio;
+      this.currentTime = this.$refs.audio.currentTime;
+      if (this.isPlaying) {
+        this.play();
+      }
     },
     // 客户端正在请求数据，缓冲中
     onProgress() {
@@ -172,24 +245,31 @@ export default {
     // 歌曲已经载入完全
     onCanPlayThrough() {
       console.log("onCanPlayThrough");
-      if (this.isPlaying) {
+      if (this.autoPlay) {
         this.play();
       }
     },
     // 音频的播放是否已结束
     onEnded() {
-      // 循环播放
-      if (this.loop) {
-        this.$refs.audio.play();
+      // 单曲循环模式
+      if (this.playMode === 'single-loop') {
+        this.play();
         return;
       }
-      this.isPlaying = false;
-      this.$emit("ended");
+      // 列表播放模式
+      if (this.playMode === 'list' && this.currentIndex === this.audioList.length - 1) {
+        this.pause();
+        return;
+      }
+      this.playNext();
     },
     onTimeUpdate() {
       this.currentTime = this.$refs.audio.currentTime;
       this.$emit("playing", this.currentTime);
-    }
+    },
+    onLoadedmetadata() {
+      console.log("onLoadedmetadata");
+    },
   }
 }
 </script>

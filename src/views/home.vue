@@ -3,7 +3,37 @@
     <el-row :gutter="20" style="margin: 0;">
       <el-col :span="14">
         <el-scrollbar style="height:calc(100vh - 65px)">
-          <AudioPlayList :play-list="audio_list"/>
+          <el-table
+            :data="audio_list"
+            :show-header="false"
+            style="width: 100%"
+          >
+            <el-table-column
+              type="index"
+              width="50">
+            </el-table-column>
+            <el-table-column
+              prop="name"
+            >
+              <template slot-scope="scope">
+                <label>{{scope.row.name}}</label>
+                <span class="audio-play__button-group">
+                  <el-button size="mini" type="info" icon="el-icon-video-play" circle
+                             @click="onPlay(scope.$index)"></el-button>
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="author"
+              width="160px"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="album"
+              width="200px"
+            >
+            </el-table-column>
+          </el-table>
         </el-scrollbar>
       </el-col>
       <el-col :span="10">
@@ -27,7 +57,11 @@
         </div>
       </el-col>
       <el-col :span="24" class="audio-player-container">
-        <AudioPlayer :audio-list="audioList" :before-play="onBeforePlay" @playing="playing" @play="play"/>
+        <AudioPlayer
+          ref="player" :src="audio.src" :loop="true" @before-play="onBeforePlay" @playing="playing"
+          @play="play"
+          @volume-change="onVolumeChange"
+        />
       </el-col>
     </el-row>
   </div>
@@ -35,27 +69,19 @@
 </template>
 
 <script>
-import AudioPlayList from '@/components/AudioPlayList'
 import AudioPlayer from '@/components/AudioPlayer'
 import AudioLyric from '@/components/AudioLyric'
 import {mapGetters} from 'vuex'
+import audio from "../store/modules/audio";
 
 export default {
   components: {
-    AudioPlayList,
     AudioLyric,
-    AudioPlayer
+    AudioPlayer,
   },
   data() {
     return {
       currentTime: null,
-      // audioList: [
-      //   'https://96.f.1ting.com/local_to_cube_202004121813/96kmp3/zzzzzmp3/2015kNov/20X/20m_MingX/01.mp3',
-      //   'https://96.f.1ting.com/local_to_cube_202004121813/96kmp3/2020/08/25/25a_pyc/01.mp3',
-      //   "https://96.f.1ting.com/local_to_cube_202004121813/96kmp3/2020/08/13/13d_jtq/01.mp3",
-      //   "https://96.f.1ting.com/local_to_cube_202004121813/96kmp3/2020/08/13/13s_ylf/01.mp3",
-      //   "https://96.f.1ting.com/local_to_cube_202004121813/96kmp3/2020/08/13/13r_ylf/01.mp3"
-      // ]
     }
   },
   computed: {
@@ -69,21 +95,35 @@ export default {
 
   },
   methods: {
-    onBeforePlay(next) {
+    onTableRowClick(row) {
+      const _index = this.audio_list.findIndex((value) => value == row)
+      this.$store.commit('audio/SET_ITEM', row);
+      this.$refs.player.currentIndex = _index;
+    },
+    onBeforePlay() {
       console.log("onBeforePlay");
-      next();
+      console.log(audio.src);
+      if (!audio.src) {
+        this.$store.commit('audio/SET_ITEM', this.audio_list[0])
+      }
     },
     playing(time) {
       this.currentTime = time;
     },
-    play(index) {
-      console.log(index);
-      this.$store.commit('audio/SET_ITEM', this.audio_list[index]);
+    play() {
+      console.log("play");
+    },
+    onVolumeChange() {
+    },
+    onPlay(index) {
+      this.$store.commit('audio/SET_INDEX', index);
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+
+@import "./../styles";
 
 ::v-deep .el-scrollbar__wrap {
   overflow-x: hidden;
@@ -116,6 +156,19 @@ export default {
       height: 100%;
       border-radius: 50%;
     }
+  }
+}
+
+.audio-play__button-group {
+  float: right;
+  display: none;
+}
+
+::v-deep .el-table__row:hover .audio-play__button-group {
+  display: block;
+
+  .el-button--mini.is-circle {
+    padding: 4px;
   }
 }
 </style>

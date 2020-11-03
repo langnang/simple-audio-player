@@ -9,6 +9,7 @@ export default {
       author: "",
       lyric: "",
     },
+    index: 0,
     isPlaying: false,
     list: [
       {
@@ -163,6 +164,9 @@ export default {
     ]
   },
   mutations: {
+    SET_INDEX(state, index) {
+      state.index = index;
+    },
     SET_ITEM(state, item) {
       state.item = item;
     }

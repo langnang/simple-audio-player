@@ -13,7 +13,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 html,
 body, * {
   margin: 0;
@@ -21,7 +21,7 @@ body, * {
 }
 
 body {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 #app {
@@ -30,6 +30,5 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
-
 
 </style>

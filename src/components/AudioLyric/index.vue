@@ -1,10 +1,10 @@
 <template>
   <div class="audio-lyric">
-
     <!--音频信息：歌词 -->
     <div class="audio-info__lyric">
-      <ul style="list-style: none;">
-        <li v-for="(l,index) in split_lyric" :key="index" :class="{active:index==currentIndex}">
+      <ul class="audio-info__lyric-group" style="list-style: none;">
+        <li class="audio-info__lyric-item" v-for="(l,index) in split_lyric" :key="index"
+            :class="{active:index==currentIndex}">
           {{l.lyric}}
         </li>
       </ul>
@@ -72,7 +72,15 @@ export default {
   }
 }
 
+.audio-info__lyric-item {
+  font: {
+    size: 14px;
+  }
+  color: rgba(225, 225, 225, .8);
+  padding: 3px 0;
+}
+
 .active {
-  color: red;
+  color: #31c27c;
 }
 </style>

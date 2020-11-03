@@ -1,0 +1,19 @@
+::v-deep {
+  .el-table {
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+
+    th, tr {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    td, th {
+      padding: 8px 0;
+
+    }
+  }
+
+  .el-table__body-wrapper {
+    min-height: calc(100vh - 100px);
+  }
+}
