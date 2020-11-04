@@ -3,11 +3,17 @@
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.2);
 
-    th, tr {
+    th,
+    tr {
       background-color: rgba(255, 255, 255, 0.2);
+
+      &.active {
+        background-color: rgba(255, 255, 255, 0.6);
+      }
     }
 
-    td, th {
+    td,
+    th {
       padding: 8px 0;
 
     }
@@ -21,6 +27,6 @@
   }
 
   .el-table__body-wrapper {
-    min-height: calc(100vh - 100px);
+    min-height: calc(100vh - 65px);
   }
 }

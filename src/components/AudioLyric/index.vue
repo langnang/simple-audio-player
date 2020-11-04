@@ -2,11 +2,19 @@
   <div class="audio-lyric">
     <!--音频信息：歌词 -->
     <div class="audio-info__lyric">
-      <el-scrollbar ref="lyricScrollbar" style="height:calc(100vh - 275px)">
-        <ul ref="lyric" class="audio-info__lyric-group" style="list-style: none;">
-          <li class="audio-info__lyric-item" v-for="(l,index) in split_lyric" :key="index"
-              :class="{active:index==currentIndex}">
-            {{l.lyric}}
+      <el-scrollbar ref="lyricScrollbar" style="height:calc(100vh - 250px)">
+        <ul
+          ref="lyric"
+          class="audio-info__lyric-group"
+          style="list-style: none;"
+        >
+          <li
+            v-for="(l, index) in split_lyric"
+            :key="index"
+            class="audio-info__lyric-item"
+            :class="{ active: index == currentIndex }"
+          >
+            {{ l.lyric }}
           </li>
         </ul>
       </el-scrollbar>
@@ -25,47 +33,49 @@ export default {
     lyric: {
       type: String,
       default: null,
-    }
+    },
   },
   data() {
-    return {}
+    return {};
   },
   computed: {
     split_lyric() {
       const lyricArray = [];
-      this.lyric.split(/\n/).forEach(value => {
+      this.lyric.split(/\n/).forEach((value) => {
         // console.log(v.match(/\[\d{2}:\d{2}.\d{2,3}\]/))
         const item = {
           start: null,
           lyric: value,
           end: null,
-        }
-        if (value[0] == '[') {
+        };
+        if (value[0] == "[") {
           item.start = 0;
           item.start += parseInt(value.substr(1, 2)) * 60;
           item.start += parseInt(value.substr(4, 2));
           item.start += parseInt(value.substr(7, 2)) * 0.01;
-          item.lyric = item.lyric.substr(10)
+          item.lyric = item.lyric.substr(10);
         }
-        lyricArray.push(item)
-      })
-      console.log(lyricArray);
+        if (item.lyric != "") {
+          lyricArray.push(item);
+        }
+      });
       return lyricArray;
     },
     currentIndex() {
-      const index = this.split_lyric.findIndex(v => v.start > this.currentTime);
+      const index = this.split_lyric.findIndex(
+        (v) => v.start > this.currentTime
+      );
       return index - 1;
     },
   },
   methods: {},
   watch: {
-    currentIndex: function (val) {
-      console.log(this.$refs);
-      console.log(val);
-      this.$refs.lyric.style.transform = `translateY(${330 - (25 * (val + 1))}px)`
-    }
-  }
-}
+    currentIndex: function(val) {
+      this.$refs.lyric.style.transform = `translateY(${330 -
+        25 * (val + 1)}px)`;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -93,7 +103,7 @@ export default {
   font: {
     size: 14px;
   }
-  color: rgba(225, 225, 225, .8);
+  color: rgba(225, 225, 225, 0.8);
   padding: 3px 0;
 }
 
