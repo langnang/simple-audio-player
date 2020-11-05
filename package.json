@@ -1,6 +1,6 @@
 {
   "name": "audio-player",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "音频播放器",
   "private": false,
   "scripts": {
@@ -14,7 +14,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.1",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "@fortawesome/vue-fontawesome": "^0.1.5",
-    "@langnang/vue-audio-player": "^0.1.5",
+    "@langnang/vue-audio-player": "^0.1.7",
     "axios": "^0.18.0",
     "core-js": "^3.6.4",
     "element-ui": "^2.4.5",
@@ -74,8 +74,5 @@
   "bugs": {
     "url": "https://github.com/langnang/AudioPlayer/issues"
   },
-  "homepage": "https://github.com/langnang/AudioPlayer#readme",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  }
+  "homepage": "https://github.com/langnang/AudioPlayer#readme"
 }
