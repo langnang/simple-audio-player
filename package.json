@@ -75,5 +75,7 @@
     "url": "https://github.com/langnang/AudioPlayer/issues"
   },
   "homepage": "https://github.com/langnang/AudioPlayer#readme",
-  "main": "app.config.js"
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
