@@ -34,18 +34,18 @@
         <div class="audio-info">
           <!--音频信息：封面 -->
           <div
+            v-if="audio.cover"
             class="audio-info__cover"
             :class="{ active: isPlaying }"
-            v-if="audio.cover"
           >
             <img :src="audio.cover" />
           </div>
           <!--音频信息：专辑 -->
-          <div class="audio-info__album" v-if="audio.album">
+          <div v-if="audio.album" class="audio-info__album">
             {{ audio.album }}
           </div>
           <!--音频信息：作者 -->
-          <div class="audio-info__author" v-if="audio.author">
+          <div v-if="audio.author" class="audio-info__author">
             {{ audio.singer }}
           </div>
           <!--音频信息：歌词 -->

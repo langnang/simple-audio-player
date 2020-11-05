@@ -5,13 +5,12 @@ import "./plugins/element.js";
 import App from "./App.vue";
 import router from "./routes";
 import store from "./store";
-
 import AudioPlayer from "@langnang/vue-audio-player";
-
-Vue.use(AudioPlayer);
+import "@langnang/vue-audio-player/lib/vue-audio-player.css";
 
 Vue.config.productionTip = false;
 Vue.use(require("vue-wechat-title"));
+Vue.use(AudioPlayer);
 
 new Vue({
   router,
