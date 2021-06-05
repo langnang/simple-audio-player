@@ -2,11 +2,11 @@
   <div class="audio-lyric">
     <!--音频信息：歌词 -->
     <div class="audio-info__lyric">
-      <el-scrollbar ref="lyricScrollbar" style="height:calc(100vh - 250px)">
+      <el-scrollbar ref="lyricScrollbar" style="height: calc(100vh - 250px)">
         <ul
           ref="lyric"
           class="audio-info__lyric-group"
-          style="list-style: none;"
+          style="list-style: none"
         >
           <li
             v-for="(l, index) in split_lyric"
@@ -28,12 +28,12 @@ export default {
   props: {
     currentTime: {
       type: Number,
-      default: null,
+      default: null
     },
     lyric: {
       type: String,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {};
@@ -41,19 +41,24 @@ export default {
   computed: {
     split_lyric() {
       const lyricArray = [];
-      this.lyric.split(/\n/).forEach((value) => {
+      if (!this.lyric) {
+        return [];
+      }
+      this.lyric.split(/\n/).forEach(value => {
         // console.log(v.match(/\[\d{2}:\d{2}.\d{2,3}\]/))
         const item = {
           start: null,
           lyric: value,
-          end: null,
+          end: null
         };
-        if (value[0] == "[") {
+        let startIndex = value.indexOf("[");
+        let endIndex = value.indexOf("]");
+        if (startIndex != -1) {
           item.start = 0;
-          item.start += parseInt(value.substr(1, 2)) * 60;
-          item.start += parseInt(value.substr(4, 2));
-          item.start += parseInt(value.substr(7, 2)) * 0.01;
-          item.lyric = item.lyric.substr(10);
+          item.start += parseInt(value.substr(startIndex + 1, 2)) * 60;
+          item.start += parseInt(value.substr(startIndex + 4, 2));
+          item.start += parseInt(value.substr(startIndex + 7, 2)) * 0.01;
+          item.lyric = item.lyric.substr(endIndex + 1);
         }
         if (item.lyric != "") {
           lyricArray.push(item);
@@ -62,19 +67,17 @@ export default {
       return lyricArray;
     },
     currentIndex() {
-      const index = this.split_lyric.findIndex(
-        (v) => v.start > this.currentTime
-      );
+      const index = this.split_lyric.findIndex(v => v.start > this.currentTime);
       return index - 1;
-    },
+    }
   },
   methods: {},
   watch: {
     currentIndex: function(val) {
       this.$refs.lyric.style.transform = `translateY(${330 -
         25 * (val + 1)}px)`;
-    },
-  },
+    }
+  }
 };
 </script>
 
