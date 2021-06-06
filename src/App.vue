@@ -16,6 +16,7 @@
       <router-view
         :current-time="currentTime"
         @play="$refs['player'].onPlay(0)"
+        :is-playing="isPlaying"
       ></router-view>
     </keep-alive>
     <AudioPlayer
@@ -23,6 +24,7 @@
       :src-list="[song]"
       src-key="url"
       @playing="playing"
+      @play="onPlay"
       @play-prev="onPlayPrev"
       @play-next="onPlayNext"
       @ended="onEnded"
@@ -38,7 +40,8 @@ export default {
   data() {
     return {
       activeMenu: this.$route.path,
-      currentTime: null
+      currentTime: null,
+      isPlaying: false
     };
   },
   computed: {
@@ -48,6 +51,9 @@ export default {
   methods: {
     playing(time) {
       this.currentTime = time;
+    },
+    onPlay() {
+      this.isPlaying = true;
     },
     onPlayNext() {
       this.$store.dispatch("playNext");

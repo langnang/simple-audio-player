@@ -85,9 +85,9 @@ export default {
     // 查询排行榜列表
     getToplist() {
       get_toplist().then(res => {
-        this.toplist.data = res;
-        this.toplist.active = res[0].id;
-        this.getPlaylist(res[0].id);
+        this.toplist.data = res.list;
+        this.toplist.active = res.list[0].id;
+        this.getPlaylist();
       });
     },
     // 查询歌单列表
@@ -95,7 +95,7 @@ export default {
       const id = this.toplist.active;
       this.playlist.loading = true;
       get_playlist(id).then(res => {
-        this.playlist.tableData = res;
+        this.playlist.tableData = res.playlist.tracks;
         this.playlist.loading = false;
       });
     },

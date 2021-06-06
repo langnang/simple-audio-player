@@ -10,8 +10,12 @@ import axios from "axios";
 
 let config = {
   baseURL: process.env.VUE_APP_BASE_API || "",
-  timeout: 60 * 1000 // Timeout
-  // withCredentials: true, // Check cross-site Access-Control
+  timeout: 60 * 1000, // Timeout
+  headers: {
+    Accept: "*/*",
+    "Accept-Language": "zh-CN,zh;q=0.9",
+    "Content-Type": "application/x-www-form-urlencoded"
+  }
 };
 
 const _axios = axios.create(config);
@@ -31,8 +35,8 @@ _axios.interceptors.request.use(
 _axios.interceptors.response.use(
   function(response) {
     // Do something with response data
-    if (response.status == 200 && response.data.status == 200) {
-      return response.data.data;
+    if (response.status == 200) {
+      return response.data;
     } else {
       return Promise.reject(response);
     }

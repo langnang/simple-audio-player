@@ -2,7 +2,7 @@
   <div class="audio-lyric">
     <!--音频信息：歌词 -->
     <div class="audio-info__lyric">
-      <el-scrollbar ref="lyricScrollbar" style="height: calc(100vh - 250px)">
+      <el-scrollbar ref="lyricScrollbar" style="height: calc(100vh - 325px)">
         <ul
           ref="lyric"
           class="audio-info__lyric-group"
