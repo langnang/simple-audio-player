@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import HomeRoute from "./../views/home.vue";
 import ToplistRoute from "./../views/toplist.vue";
 import PlaylistRoute from "./../views/playlist.vue";
+import ArtistRoute from "./../views/artist.vue";
 
 Vue.use(VueRouter);
 export default new VueRouter({
@@ -20,6 +21,10 @@ export default new VueRouter({
     {
       path: "/playlist",
       component: PlaylistRoute
+    },
+    {
+      path: "/artist",
+      component: ArtistRoute
     },
     {
       path: "*",

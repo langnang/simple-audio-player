@@ -6,38 +6,31 @@
           <el-radio-button label="网易云"></el-radio-button>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="系列">
-        <el-radio-group v-model="catlist.activeCat" @change="handleChangeCat">
-          <el-radio-button :label="-1">{{ catlist.all.name }}</el-radio-button>
-          <el-radio-button
-            v-for="(cat, key) in catlist.categories"
-            :key="key"
-            :label="key"
-            >{{ cat }}</el-radio-button
-          >
+      <el-form-item label="组合">
+        <el-radio-group v-model="type" @change="handleChanageType">
+          <el-radio-button :label="-1">全部</el-radio-button>
+          <el-radio-button :label="1">男歌手</el-radio-button>
+          <el-radio-button :label="2">女歌手</el-radio-button>
+          <el-radio-button :label="3">组合/乐队</el-radio-button>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="分类" v-if="catlist.activeCat != '-1'">
-        <el-radio-group v-model="catlist.activeSub" @change="handleChangeSub">
-          <el-radio-button
-            v-for="(cat, key) in catlist.sub.filter(
-              item => item.category == catlist.activeCat
-            )"
-            :key="key"
-            :label="cat.name"
-          ></el-radio-button>
+      <el-form-item label="地区">
+        <el-radio-group v-model="area" @change="handleChanageArea">
+          <el-radio-button :label="-1">全部</el-radio-button>
+          <el-radio-button :label="7">华语</el-radio-button>
+          <el-radio-button :label="96">欧美</el-radio-button>
+          <el-radio-button :label="8">日本</el-radio-button>
+          <el-radio-button :label="16">韩国</el-radio-button>
+          <el-radio-button :label="0">其它</el-radio-button>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="歌单" v-if="playlists.tableData.length > 0">
-        <el-radio-group
-          v-model="playlists.active"
-          @change="handleChangePlaylist"
-        >
+      <el-form-item label="歌手">
+        <el-radio-group v-model="artists.active" @change="handleChangeArtist">
           <el-radio-button
-            v-for="(play, key) in playlists.tableData"
-            :key="key"
-            :label="play.id"
-            >{{ play.name }}</el-radio-button
+            v-for="ar in artists.data"
+            :key="ar.id"
+            :label="ar.id"
+            >{{ ar.name }}</el-radio-button
           >
         </el-radio-group>
       </el-form-item>
@@ -56,7 +49,6 @@
         >
       </el-form-item>
     </el-form>
-
     <el-col :span="24">
       <el-table
         :data="playlist.tableData"
@@ -88,24 +80,22 @@
   </el-row>
 </template>
 <script>
-import { get_playlist, get_playlist_catlist, get_playlist_top } from "@/api";
+import {
+  get_toplist,
+  get_playlist,
+  get_artist_list,
+  get_artist_top_songs
+} from "@/api";
 export default {
   name: "toplist",
   data() {
     return {
+      type: "-1",
+      area: "-1",
       platform: "网易云",
-
-      catlist: {
-        all: {},
-        activeCat: "-1",
-        categories: {},
-        activeSub: "",
-        sub: []
-      },
-      playlists: {
+      artists: {
         active: "",
-        tableData: [],
-        loading: false
+        data: []
       },
       playlist: {
         active: "",
@@ -116,51 +106,58 @@ export default {
   },
   computed: {},
   created() {
-    this.getPlaylistCatlist();
+    this.getArtistList();
   },
   methods: {
-    // 选中排行榜
-    handleChangePlaylist() {
-      this.getPlaylist();
+    handleChanageType() {
+      this.getArtistList();
     },
-    getPlaylistCatlist() {
-      get_playlist_catlist().then(res => {
-        if (res == "") {
-          setTimeout(this.getPlaylistCatlist(), 1000);
-          return;
-        }
-        this.catlist.all = res.all;
-        this.catlist.categories = res.categories;
-        this.catlist.sub = res.sub;
-        this.getTopPlaylist();
+    handleChanageArea() {
+      this.getArtistList();
+    },
+    handleChangeArtist() {
+      this.getArtistTopSongs();
+    },
+    // 查询歌手列表
+    getArtistList() {
+      get_artist_list({
+        type: this.type,
+        area: this.area
+      }).then(res => {
+        this.artists.data = res.artists;
       });
     },
-    handleChangeCat() {
-      if (this.catlist.activeCat == -1) {
-        this.getTopPlaylist();
-      }
+    // 查询歌手热门50首歌曲
+    getArtistTopSongs() {
+      const id = this.artists.active;
+      this.playlist.loading = true;
+
+      get_artist_top_songs(id).then(res => {
+        this.playlist.tableData = res.songs;
+        this.playlist.loading = false;
+      });
     },
-    handleChangeSub() {
-      this.getTopPlaylist(this.catlist.activeSub).then();
-    },
-    // 查询精选碟歌单
-    getTopPlaylist(cat) {
-      this.playlists.loading = true;
-      get_playlist_top(cat).then(res => {
-        this.playlists.tableData = res.playlists;
-        this.playlists.loading = false;
+    // 查询排行榜列表
+    getToplist() {
+      get_toplist().then(res => {
+        this.toplist.data = res.list;
+        this.toplist.active = res.list[0].id;
+        this.getPlaylist();
       });
     },
     // 查询歌单列表
     getPlaylist() {
-      const id = this.playlists.active;
+      const id = this.toplist.active;
       this.playlist.loading = true;
       get_playlist(id).then(res => {
         this.playlist.tableData = res.playlist.tracks;
         this.playlist.loading = false;
       });
     },
-
+    // 选中排行榜
+    handleChangeToplist() {
+      this.getPlaylist();
+    },
     // 播放
     handlePlay() {
       this.$confirm("此操作将替换当前播放列表, 是否继续?", "提示", {

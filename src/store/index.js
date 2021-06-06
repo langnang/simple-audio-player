@@ -9,7 +9,13 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   modules: {
     playlist: [],
-    song: {}
+    song: {},
+    app: {
+      mainBgColor: "#222327",
+      mainHoverColor: "",
+      mainActiveColor: "",
+      cardBgColor: "#313237"
+    }
   },
   mutations: {
     SET_PLAY_LIST(state, list) {

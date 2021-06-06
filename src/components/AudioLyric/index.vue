@@ -2,7 +2,7 @@
   <div class="audio-lyric">
     <!--音频信息：歌词 -->
     <div class="audio-info__lyric">
-      <el-scrollbar ref="lyricScrollbar" style="height: calc(100vh - 325px)">
+      <el-scrollbar ref="lyricScrollbar" style="height: calc(100vh - 172px)">
         <ul
           ref="lyric"
           class="audio-info__lyric-group"
@@ -106,11 +106,12 @@ export default {
   font: {
     size: 14px;
   }
-  color: rgba(225, 225, 225, 0.8);
+  color: #606266;
+  // color: rgba(225, 225, 225, 0.8);
   padding: 3px 0;
 }
 
 .active {
-  color: #31c27c;
+  color: #7f6ce9;
 }
 </style>

@@ -12,7 +12,7 @@
             v-for="top in toplist.data"
             :key="top.id"
             :label="top.id"
-            >{{ top.name }}}</el-radio-button
+            >{{ top.name }}</el-radio-button
           >
         </el-radio-group>
       </el-form-item>
@@ -20,11 +20,13 @@
         <el-button
           :disabled="playlist.tableData.length == 0"
           @click="handlePlay"
+          type="info"
           >播放</el-button
         >
         <el-button
           :disabled="playlist.tableData.length == 0"
           @click="handleAddtoPlaylist"
+          type="info"
           >添加至播放列表</el-button
         >
       </el-form-item>
@@ -146,14 +148,6 @@ export default {
         });
     }
   },
-  watch: {
-    "$route.query.id": function(newV) {
-      if (newV) {
-        console.log(newV);
-        console.log(this);
-        this.$store.dispatch("getToplist", this.$route.query);
-      }
-    }
-  }
+  watch: {}
 };
 </script>

@@ -27,41 +27,71 @@ export const get_lyric = id => {
   });
 };
 export const get_song_url = id => {
-  const data = eapi("/api/song/enhance/player/url", {
-    ids: JSON.stringify([id]),
-    br: "999000",
-    csrf_token: ""
-  });
   return request({
     method: "post",
     url: "interface3.music.163/eapi/song/enhance/player/url",
-    data: queryString.stringify(data)
+    data: queryString.stringify(
+      eapi("/api/song/enhance/player/url", {
+        ids: JSON.stringify([id]),
+        br: "999000",
+        csrf_token: ""
+      })
+    )
   });
 };
 
 export const get_playlist_catlist = () => {
-  const data = weapi({ csrf_token: "" });
   return request({
     method: "post",
     url: "music.163/weapi/playlist/catalogue",
-    data: queryString.stringify(data)
+    data: queryString.stringify(weapi({ csrf_token: "" }))
   });
 };
 
 export const get_playlist_top = (cat = "全部") => {
-  console.log(cat);
-  const data = weapi({
-    cat,
-    order: "hot",
-    limit: 50,
-    offset: 0,
-    total: true,
-    csrf_token: ""
-  });
-  console.log(data);
   return request({
     method: "post",
     url: "music.163/weapi/playlist/list",
-    data: queryString.stringify(data)
+    data: queryString.stringify(
+      weapi({
+        cat,
+        order: "hot",
+        limit: 50,
+        offset: 0,
+        total: true,
+        csrf_token: ""
+      })
+    )
+  });
+};
+
+export const get_artist_list = params => {
+  return request({
+    method: "post",
+    url: "music.163/weapi/v1/artist/list",
+    data: queryString.stringify(
+      weapi({
+        initial: undefined,
+        offset: 0,
+        limit: 30,
+        total: true,
+        type: params.type,
+        area: params.area,
+        csrf_token: ""
+      })
+    )
+  });
+};
+
+export const get_artist_top_songs = id => {
+  return request({
+    method: "post",
+    url: "music.163/weapi/artist/top/song",
+    data: queryString.stringify(
+      weapi({
+        id,
+        csrf_token: ""
+      })
+    )
   });
 };

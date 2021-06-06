@@ -1,12 +1,13 @@
 <template>
-  <el-row :gutter="20" style="margin: 0">
+  <el-row :gutter="6" style="margin: 0">
     <el-col :span="14">
-      <el-scrollbar style="height: calc(100vh - 125px)">
+      <el-scrollbar style="height: calc(100vh - 132px)">
         <el-table
           :data="playlist"
           :show-header="false"
           style="width: 100%"
           :row-class-name="tableRowClassName"
+          size="mini"
         >
           <el-table-column type="index" width="50"> </el-table-column>
           <el-table-column>
@@ -40,17 +41,26 @@
       </el-scrollbar>
     </el-col>
     <el-col :span="10">
-      <div class="audio-info">
+      <div
+        class="audio-info"
+        style=" background-color:#313237;position:static;"
+      >
         <!--音频信息：封面 -->
-        <div class="audio-info__cover" :class="{ active: isPlaying }">
-          <img :src="song.al.picUrl" />
+        <div class="audio-info__cover" style="position:absolute;">
+          <img :src="song.al.picUrl" :class="{ active: isPlaying }" />
         </div>
         <!--音频信息：专辑 -->
-        <div class="audio-info__album">
+        <div
+          class="audio-info__album"
+          style="height:20px;line-height:20px;color:#606266;"
+        >
           {{ song.al.name }}
         </div>
         <!--音频信息：作者 -->
-        <div class="audio-info__author">
+        <div
+          class="audio-info__author"
+          style="height:20px;line-height:20px;color:#606266;"
+        >
           {{ song.ar.map(item => item.name).join("  ") }}
         </div>
         <!--音频信息：歌词 -->
@@ -76,7 +86,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["playlist", "song"])
+    ...mapGetters(["playlist", "song", "app"])
     // audioList() {
     //   return this.audio_list.reduce((total, value) => {
     //     total.push(value.src);
@@ -127,24 +137,26 @@ export default {
   text-align: center;
 
   .audio-info__cover {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto;
-
+    position: absolute;
+    width: initial;
+    height: initial;
+    overflow: hidden;
+    opacity: 0.1;
+    top: 12%;
     img {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-    }
-    &.active {
-      animation: rotation 6s infinite linear;
+      &.active {
+        animation: rotation 6s infinite linear;
+      }
     }
   }
   .audio-info__album {
-    color: aliceblue;
+    // color: aliceblue;
   }
   .audio-info__author {
-    color: aliceblue;
+    // color: aliceblue;
   }
 }
 

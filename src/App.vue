@@ -4,14 +4,15 @@
       mode="horizontal"
       :router="true"
       :default-active="activeMenu"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b"
       size="mini"
+      background-color="#313237"
+      text-color="#686f74"
+      active-text-color="#c6c7cb"
     >
       <el-menu-item index="/">首页</el-menu-item>
       <el-menu-item index="/toplist">排行榜</el-menu-item>
       <el-menu-item index="/playlist">歌单</el-menu-item>
+      <el-menu-item index="/artist">歌手</el-menu-item>
     </el-menu>
     <keep-alive>
       <router-view
@@ -30,6 +31,7 @@
       @play-prev="onPlayPrev"
       @play-next="onPlayNext"
       @ended="onEnded"
+      style="margin-top:12px"
     />
   </div>
 </template>
@@ -84,16 +86,12 @@ body,
 }
 
 body {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: #222327;
 }
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
-.el-menu.el-menu--horizontal {
-  border: 0;
 }
 </style>
