@@ -11,6 +11,7 @@
     >
       <el-menu-item index="/">首页</el-menu-item>
       <el-menu-item index="/toplist">排行榜</el-menu-item>
+      <el-menu-item index="/playlist">歌单</el-menu-item>
     </el-menu>
     <keep-alive>
       <router-view
@@ -25,6 +26,7 @@
       src-key="url"
       @playing="playing"
       @play="onPlay"
+      @pause="onPause"
       @play-prev="onPlayPrev"
       @play-next="onPlayNext"
       @ended="onEnded"
@@ -54,6 +56,9 @@ export default {
     },
     onPlay() {
       this.isPlaying = true;
+    },
+    onPause() {
+      this.isPlaying = false;
     },
     onPlayNext() {
       this.$store.dispatch("playNext");

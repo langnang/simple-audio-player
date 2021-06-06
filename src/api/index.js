@@ -1,5 +1,6 @@
 import request from "@/plugins/axios";
-import { eapi } from "@/utils/crypto";
+import { weapi, eapi } from "@/utils/crypto";
+import queryString from "querystring";
 
 export const get_toplist = () => {
   return request({
@@ -34,15 +35,33 @@ export const get_song_url = id => {
   return request({
     method: "post",
     url: "interface3.music.163/eapi/song/enhance/player/url",
-    data: `params=${data.params}&encSecKey=${data.encSecKey}`
+    data: queryString.stringify(data)
   });
 };
-export const get_song = id => {
+
+export const get_playlist_catlist = () => {
+  const data = weapi({ csrf_token: "" });
   return request({
-    method: "get",
-    url: "music.163/song",
-    params: {
-      id
-    }
+    method: "post",
+    url: "music.163/weapi/playlist/catalogue",
+    data: queryString.stringify(data)
+  });
+};
+
+export const get_playlist_top = (cat = "全部") => {
+  console.log(cat);
+  const data = weapi({
+    cat,
+    order: "hot",
+    limit: 50,
+    offset: 0,
+    total: true,
+    csrf_token: ""
+  });
+  console.log(data);
+  return request({
+    method: "post",
+    url: "music.163/weapi/playlist/list",
+    data: queryString.stringify(data)
   });
 };
