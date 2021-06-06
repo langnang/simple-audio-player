@@ -1,12 +1,13 @@
 <template>
-  <el-row :gutter="20" style="margin: 0">
+  <el-row :gutter="6" style="margin: 0">
     <el-col :span="14">
-      <el-scrollbar style="height: calc(100vh - 125px)">
+      <el-scrollbar style="height: calc(100vh - 132px)">
         <el-table
           :data="playlist"
           :show-header="false"
           style="width: 100%"
           :row-class-name="tableRowClassName"
+          size="mini"
         >
           <el-table-column type="index" width="50"> </el-table-column>
           <el-table-column>
@@ -24,38 +25,43 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="时长" show-overflow-tooltip width="80px">
-            <template slot-scope="$scope">
-              {{ parseInt($scope.row.dt / 1000 / 60) }}
-            </template>
+          <el-table-column
+            label="时长"
+            show-overflow-tooltip
+            width="80px"
+            :formatter="playTime"
+          >
           </el-table-column>
           <el-table-column show-overflow-tooltip width="120px">
             <template v-slot="scope">
-              <span v-for="artist in scope.row.ar" :key="artist.id">{{
-                artist.name
-              }}</span>
+              {{ scope.row.ar.map(item => item.name).join("  ") }}
             </template>
           </el-table-column>
         </el-table>
       </el-scrollbar>
     </el-col>
     <el-col :span="10">
-      <div class="audio-info">
+      <div
+        class="audio-info"
+        style=" background-color:#313237;position:static;"
+      >
         <!--音频信息：封面 -->
-        <div
-          v-if="song.cover"
-          class="audio-info__cover"
-          :class="{ active: isPlaying }"
-        >
-          <img :src="audio.cover" />
+        <div class="audio-info__cover" style="position:absolute;">
+          <img :src="song.al.picUrl" :class="{ active: isPlaying }" />
         </div>
         <!--音频信息：专辑 -->
-        <div v-if="song.album" class="audio-info__album">
-          {{ audio.album }}
+        <div
+          class="audio-info__album"
+          style="height:20px;line-height:20px;color:#606266;"
+        >
+          {{ song.al.name }}
         </div>
         <!--音频信息：作者 -->
-        <div v-if="song.author" class="audio-info__author">
-          {{ audio.singer }}
+        <div
+          class="audio-info__author"
+          style="height:20px;line-height:20px;color:#606266;"
+        >
+          {{ song.ar.map(item => item.name).join("  ") }}
         </div>
         <!--音频信息：歌词 -->
         <AudioLyric :lyric="song.lyric" :current-time="currentTime" />
@@ -70,7 +76,8 @@ import { mapGetters } from "vuex";
 
 export default {
   props: {
-    currentTime: {}
+    currentTime: {},
+    isPlaying: {}
   },
   components: {
     AudioLyric
@@ -79,7 +86,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["playlist", "song"])
+    ...mapGetters(["playlist", "song", "app"])
     // audioList() {
     //   return this.audio_list.reduce((total, value) => {
     //     total.push(value.src);
@@ -101,6 +108,11 @@ export default {
       this.$store.dispatch("getSong", row.id).then(() => {
         this.$emit("play");
       });
+    },
+    playTime(row) {
+      const minute = parseInt(row.dt / 1000 / 60);
+      const second = parseInt(row.dt / 1000) % 60;
+      return minute + ":" + (second > 9 ? second : "0" + second);
     }
   }
 };
@@ -125,15 +137,25 @@ export default {
   text-align: center;
 
   .audio-info__cover {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto;
-
+    position: absolute;
+    width: initial;
+    height: initial;
+    overflow: hidden;
+    opacity: 0.1;
     img {
       width: 100%;
       height: 100%;
       border-radius: 50%;
+      &.active {
+        animation: rotation 6s infinite linear;
+      }
     }
+  }
+  .audio-info__album {
+    // color: aliceblue;
+  }
+  .audio-info__author {
+    // color: aliceblue;
   }
 }
 
@@ -147,6 +169,15 @@ export default {
 
   .el-button--mini.is-circle {
     padding: 4px;
+  }
+}
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
   }
 }
 </style>

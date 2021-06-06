@@ -2,17 +2,35 @@
   <el-row>
     <el-form label-width="80px" size="mini">
       <el-form-item label="平台">
-        <el-radio-group v-model="platform" @change="handleChangePlatform">
+        <el-radio-group v-model="platform">
           <el-radio-button label="网易云"></el-radio-button>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="榜单">
-        <el-radio-group v-model="toplist.active" @change="handleChangeToplist">
+      <el-form-item label="组合">
+        <el-radio-group v-model="type" @change="handleChanageType">
+          <el-radio-button :label="-1">全部</el-radio-button>
+          <el-radio-button :label="1">男歌手</el-radio-button>
+          <el-radio-button :label="2">女歌手</el-radio-button>
+          <el-radio-button :label="3">组合/乐队</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="地区">
+        <el-radio-group v-model="area" @change="handleChanageArea">
+          <el-radio-button :label="-1">全部</el-radio-button>
+          <el-radio-button :label="7">华语</el-radio-button>
+          <el-radio-button :label="96">欧美</el-radio-button>
+          <el-radio-button :label="8">日本</el-radio-button>
+          <el-radio-button :label="16">韩国</el-radio-button>
+          <el-radio-button :label="0">其它</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="歌手">
+        <el-radio-group v-model="artists.active" @change="handleChangeArtist">
           <el-radio-button
-            v-for="top in toplist.data"
-            :key="top.id"
-            :label="top.id"
-            >{{ top.name }}</el-radio-button
+            v-for="ar in artists.data"
+            :key="ar.id"
+            :label="ar.id"
+            >{{ ar.name }}</el-radio-button
           >
         </el-radio-group>
       </el-form-item>
@@ -62,13 +80,20 @@
   </el-row>
 </template>
 <script>
-import { get_toplist, get_playlist } from "@/api";
+import {
+  get_toplist,
+  get_playlist,
+  get_artist_list,
+  get_artist_top_songs
+} from "@/api";
 export default {
   name: "toplist",
   data() {
     return {
+      type: "-1",
+      area: "-1",
       platform: "网易云",
-      toplist: {
+      artists: {
         active: "",
         data: []
       },
@@ -81,9 +106,37 @@ export default {
   },
   computed: {},
   created() {
-    this.getToplist();
+    this.getArtistList();
   },
   methods: {
+    handleChanageType() {
+      this.getArtistList();
+    },
+    handleChanageArea() {
+      this.getArtistList();
+    },
+    handleChangeArtist() {
+      this.getArtistTopSongs();
+    },
+    // 查询歌手列表
+    getArtistList() {
+      get_artist_list({
+        type: this.type,
+        area: this.area
+      }).then(res => {
+        this.artists.data = res.artists;
+      });
+    },
+    // 查询歌手热门50首歌曲
+    getArtistTopSongs() {
+      const id = this.artists.active;
+      this.playlist.loading = true;
+
+      get_artist_top_songs(id).then(res => {
+        this.playlist.tableData = res.songs;
+        this.playlist.loading = false;
+      });
+    },
     // 查询排行榜列表
     getToplist() {
       get_toplist().then(res => {
@@ -100,10 +153,6 @@ export default {
         this.playlist.tableData = res.playlist.tracks;
         this.playlist.loading = false;
       });
-    },
-    // 选中平台
-    handleChangePlatform() {
-      this.getToplist();
     },
     // 选中排行榜
     handleChangeToplist() {

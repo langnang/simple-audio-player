@@ -36,11 +36,11 @@ export default {
 ::v-deep {
   .el-table {
     border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.8);
+    // background-color: rgba(0, 0, 0, 0.8);
 
     th,
     tr {
-      background-color: rgba(0, 0, 0, 0.8);
+      // background-color: rgba(0, 0, 0, 0.8);
     }
 
     td,
