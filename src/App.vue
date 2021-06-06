@@ -69,6 +69,7 @@ export default {
       this.$store.dispatch("playPrev");
     },
     onEnded() {
+      this.isPlaying = false;
       this.$store.dispatch("playNext").then(() => {
         this.$refs["player"].onPlay(0);
       });

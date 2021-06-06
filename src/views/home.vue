@@ -142,7 +142,6 @@ export default {
     height: initial;
     overflow: hidden;
     opacity: 0.1;
-    top: 12%;
     img {
       width: 100%;
       height: 100%;

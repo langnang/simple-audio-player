@@ -2,6 +2,8 @@ import request from "@/plugins/axios";
 import { weapi, eapi } from "@/utils/crypto";
 import queryString from "querystring";
 
+export * from "./kugou";
+
 export const get_toplist = () => {
   return request({
     method: "get",

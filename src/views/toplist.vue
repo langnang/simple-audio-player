@@ -2,7 +2,7 @@
   <el-row>
     <el-form label-width="80px" size="mini">
       <el-form-item label="平台">
-        <el-radio-group v-model="platform">
+        <el-radio-group v-model="platform" @change="handleChangePlatform">
           <el-radio-button label="网易云"></el-radio-button>
         </el-radio-group>
       </el-form-item>
@@ -100,6 +100,10 @@ export default {
         this.playlist.tableData = res.playlist.tracks;
         this.playlist.loading = false;
       });
+    },
+    // 选中平台
+    handleChangePlatform() {
+      this.getToplist();
     },
     // 选中排行榜
     handleChangeToplist() {
