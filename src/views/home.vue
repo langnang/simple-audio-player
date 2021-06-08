@@ -47,21 +47,24 @@
       >
         <!--音频信息：封面 -->
         <div class="audio-info__cover" style="position:absolute;">
-          <img :src="song.al.picUrl" :class="{ active: isPlaying }" />
+          <img
+            :src="song.al ? song.al.picUrl : null"
+            :class="{ active: isPlaying }"
+          />
         </div>
         <!--音频信息：专辑 -->
         <div
           class="audio-info__album"
           style="height:20px;line-height:20px;color:#606266;"
         >
-          {{ song.al.name }}
+          {{ song.al ? song.al.name : null }}
         </div>
         <!--音频信息：作者 -->
         <div
           class="audio-info__author"
           style="height:20px;line-height:20px;color:#606266;"
         >
-          {{ song.ar.map(item => item.name).join("  ") }}
+          {{ song.ar ? song.ar.map(item => item.name).join("  ") : null }}
         </div>
         <!--音频信息：歌词 -->
         <AudioLyric :lyric="song.lyric" :current-time="currentTime" />
