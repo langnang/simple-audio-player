@@ -1,115 +1,87 @@
 import request from "@/plugins/axios";
-import { weapi, eapi } from "@/utils/crypto";
-import queryString from "querystring";
 
 export * from "./kugou";
 
+const host = "https://fg7ee.sse.codesandbox.io/music.163";
 export const get_toplist = () => {
   return request({
     method: "get",
-    url: "music.163/api/toplist"
+    url: `${host}/toplist`
   });
 };
 export const get_playlist = id => {
   return request({
     method: "get",
-    url: "music.163/api/v3/playlist/detail",
+    url: `${host}/playlist/detail`,
     params: {
-      id,
-      n: 100000,
-      s: 8
+      id
     }
   });
 };
 export const get_lyric = id => {
   return request({
-    method: "post",
-    url: "music.163/api/song/lyric",
-    data: `id=${id}&lv=-1&kv=-1&tv=-1`
-  });
-};
-export const get_song_url = id => {
-  return request({
-    method: "post",
-    url: "interface3.music.163/eapi/song/enhance/player/url",
-    data: queryString.stringify(
-      eapi("/api/song/enhance/player/url", {
-        ids: JSON.stringify([id]),
-        br: "999000",
-        csrf_token: ""
-      })
-    )
+    method: "get",
+    url: `${host}/song/lyric`,
+    params: { id }
   });
 };
 export const get_song = ids => {
   return request({
-    method: "post",
-    url: "music.163/weapi/v3/song/detail",
-    data: queryString.stringify(
-      weapi({
-        c: JSON.stringify(
-          ids.map(item => {
-            return { id: item.id };
-          })
-        ),
-        csrf_token: ""
-      })
-    )
+    method: "get",
+    url: `${host}/song/detail`,
+    params: {
+      ids: ids.map(v => v.id).join(",")
+    }
   });
 };
-
+export const get_song_url = id => {
+  return request({
+    method: "get",
+    url: `${host}/song/player/url`,
+    params: {
+      id
+    }
+  });
+};
 export const get_playlist_catlist = () => {
   return request({
-    method: "post",
-    url: "music.163/weapi/playlist/catalogue",
-    data: queryString.stringify(weapi({ csrf_token: "" }))
+    method: "get",
+    url: `${host}/playlist/catalogue`
   });
 };
 
 export const get_playlist_top = ({ cat = "全部", pageNum = 1 }) => {
   return request({
-    method: "post",
-    url: "music.163/weapi/playlist/list",
-    data: queryString.stringify(
-      weapi({
-        cat,
-        order: "hot",
-        limit: 50,
-        offset: (pageNum - 1) * 50,
-        total: true,
-        csrf_token: ""
-      })
-    )
+    method: "get",
+    url: `${host}/playlist/list`,
+    params: {
+      cat,
+      pageNum
+    }
   });
 };
 
 export const get_artist_list = ({ type, area, pageNum }) => {
   return request({
-    method: "post",
-    url: "music.163/weapi/v1/artist/list",
-    data: queryString.stringify(
-      weapi({
-        initial: undefined,
-        offset: (pageNum - 1) * 100,
-        limit: 100,
-        total: true,
-        type: type,
-        area: area,
-        csrf_token: ""
-      })
-    )
+    method: "get",
+    url: `${host}/artist/list`,
+    params: {
+      initial: undefined,
+      offset: (pageNum - 1) * 100,
+      limit: 100,
+      total: true,
+      type: type,
+      area: area
+    }
   });
 };
 
 export const get_artist_top_songs = id => {
   return request({
-    method: "post",
-    url: "music.163/weapi/artist/top/song",
-    data: queryString.stringify(
-      weapi({
-        id,
-        csrf_token: ""
-      })
-    )
+    method: "get",
+    url: `${host}/artist/top/song`,
+    params: {
+      id
+    }
   });
 };

@@ -66,6 +66,7 @@ export default {
       this.currentTime = time;
     },
     onPlay() {
+      window.document.title = this.song.name;
       this.isPlaying = true;
     },
     onPause() {

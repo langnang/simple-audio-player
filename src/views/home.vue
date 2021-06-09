@@ -118,8 +118,14 @@ export default {
       this.$refs.player.currentIndex = _index;
     },
     onRowPlay(row) {
-      this.$store.dispatch("getSong", row.id).then(() => {
-        this.$emit("play");
+      this.$store.dispatch("getSong", row.id).then(res => {
+        console.log(res);
+        if (!res.url) {
+          this.$message.error("未找到音频源");
+          this.$store.dispatch("playNext");
+        } else {
+          this.$emit("play");
+        }
       });
     },
     playTime(row) {

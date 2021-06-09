@@ -25,7 +25,7 @@
             <el-radio-button :label="0">其它</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="歌手">
+        <el-form-item label="歌手" v-if="artists.data.length > 0">
           <el-scrollbar style="height:112px">
             <el-radio-group
               v-model="artists.active"
@@ -104,6 +104,7 @@ export default {
       area: "-1",
       platform: "网易云",
       artists: {
+        loading: false,
         active: "",
         data: [],
         pageNum: 1
@@ -155,12 +156,14 @@ export default {
     },
     // 查询歌手列表
     getArtistList() {
+      this.artists.loading = true;
       get_artist_list({
         type: this.type,
         area: this.area,
         pageNum: this.artists.pageNum
       }).then(res => {
         this.artists.data = [...this.artists.data, ...res.artists];
+        this.artists.loading = false;
       });
     },
     // 查询歌手热门50首歌曲

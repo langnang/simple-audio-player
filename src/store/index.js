@@ -50,12 +50,13 @@ export default new Vuex.Store({
         new Promise(resolve => get_song_url(song_id).then(resolve)),
         new Promise(resolve => get_lyric(song_id).then(resolve))
       ]).then(res => {
-        commit("SET_SONG", {
+        song = {
           ...song,
           url: res[0].data[0].url,
-          lyric: res[1].lrc.lyric
-        });
-        return Promise.resolve({ ...res[0].data[0], lyric: res[1].lrc.lyric });
+          lyric: res[1].lrc ? res[1].lrc.lyric : ""
+        };
+        commit("SET_SONG", song);
+        return Promise.resolve(song);
       });
     },
     playNext({ state, dispatch }) {
