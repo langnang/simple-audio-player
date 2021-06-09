@@ -13,7 +13,7 @@ export const get_toplist = () => {
 export const get_playlist = id => {
   return request({
     method: "get",
-    url: "music.163/api/v6/playlist/detail",
+    url: "music.163/api/v3/playlist/detail",
     params: {
       id,
       n: 100000,
@@ -41,6 +41,22 @@ export const get_song_url = id => {
     )
   });
 };
+export const get_song = ids => {
+  return request({
+    method: "post",
+    url: "music.163/weapi/v3/song/detail",
+    data: queryString.stringify(
+      weapi({
+        c: JSON.stringify(
+          ids.map(item => {
+            return { id: item.id };
+          })
+        ),
+        csrf_token: ""
+      })
+    )
+  });
+};
 
 export const get_playlist_catlist = () => {
   return request({
@@ -50,7 +66,7 @@ export const get_playlist_catlist = () => {
   });
 };
 
-export const get_playlist_top = (cat = "全部") => {
+export const get_playlist_top = ({ cat = "全部", pageNum = 1 }) => {
   return request({
     method: "post",
     url: "music.163/weapi/playlist/list",
@@ -59,7 +75,7 @@ export const get_playlist_top = (cat = "全部") => {
         cat,
         order: "hot",
         limit: 50,
-        offset: 0,
+        offset: (pageNum - 1) * 50,
         total: true,
         csrf_token: ""
       })
@@ -67,18 +83,18 @@ export const get_playlist_top = (cat = "全部") => {
   });
 };
 
-export const get_artist_list = params => {
+export const get_artist_list = ({ type, area, pageNum }) => {
   return request({
     method: "post",
     url: "music.163/weapi/v1/artist/list",
     data: queryString.stringify(
       weapi({
         initial: undefined,
-        offset: 0,
-        limit: 30,
+        offset: (pageNum - 1) * 100,
+        limit: 100,
         total: true,
-        type: params.type,
-        area: params.area,
+        type: type,
+        area: area,
         csrf_token: ""
       })
     )

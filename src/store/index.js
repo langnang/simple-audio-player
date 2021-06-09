@@ -11,10 +11,14 @@ export default new Vuex.Store({
     playlist: [],
     song: {},
     app: {
+      menuHeight: 0,
       mainBgColor: "#222327",
       mainHoverColor: "",
       mainActiveColor: "",
       cardBgColor: "#313237"
+    },
+    player: {
+      height: 0
     }
   },
   mutations: {
@@ -24,6 +28,12 @@ export default new Vuex.Store({
     },
     SET_SONG(state, song) {
       state.song = song;
+    },
+    SET_APP(state, params) {
+      state.app = { ...state.app, ...params };
+    },
+    SET_PLAYER(state, params) {
+      state.player = { ...state.player, ...params };
     }
   },
   getters,

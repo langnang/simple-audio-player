@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <el-menu
+      ref="menu"
       mode="horizontal"
       :router="true"
       :default-active="activeMenu"
@@ -52,6 +53,14 @@ export default {
     ...mapGetters(["song"])
   },
   created() {},
+  mounted() {
+    this.$store.commit("SET_PLAYER", {
+      height: this.$refs["player"].$el.clientHeight
+    });
+    this.$store.commit("SET_APP", {
+      menuHeight: this.$refs["menu"].$el.clientHeight
+    });
+  },
   methods: {
     playing(time) {
       this.currentTime = time;
