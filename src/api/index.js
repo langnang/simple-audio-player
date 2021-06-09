@@ -2,7 +2,7 @@ import request from "@/plugins/axios";
 
 export * from "./kugou";
 
-const host = "https://fg7ee.sse.codesandbox.io/music.163";
+const host = "https://3dqx3.sse.codesandbox.io/music.163";
 export const get_toplist = () => {
   return request({
     method: "get",
