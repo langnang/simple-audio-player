@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="6" style="margin: 0">
     <el-col :span="14">
-      <el-scrollbar style="height: calc(100vh - 132px)">
+      <el-scrollbar :style="{ height: cardHeight }">
         <el-table
           :data="playlist"
           :show-header="false"
@@ -14,14 +14,21 @@
             <template v-slot="scope">
               <label>{{ scope.row.name }}</label>
               <span class="audio-play__button-group">
-                <el-button
-                  size="mini"
-                  type="info"
-                  icon="el-icon-video-play"
-                  circle
-                  @click="onRowPlay(scope.row)"
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="播放"
+                  placement="top"
                 >
-                </el-button>
+                  <el-button
+                    size="mini"
+                    type="info"
+                    icon="el-icon-video-play"
+                    circle
+                    @click="onRowPlay(scope.row)"
+                  >
+                  </el-button>
+                </el-tooltip>
               </span>
             </template>
           </el-table-column>
@@ -47,21 +54,24 @@
       >
         <!--音频信息：封面 -->
         <div class="audio-info__cover" style="position:absolute;">
-          <img :src="song.al.picUrl" :class="{ active: isPlaying }" />
+          <img
+            :src="song.al ? song.al.picUrl : null"
+            :class="{ active: isPlaying }"
+          />
         </div>
         <!--音频信息：专辑 -->
         <div
           class="audio-info__album"
           style="height:20px;line-height:20px;color:#606266;"
         >
-          {{ song.al.name }}
+          {{ song.al ? song.al.name : null }}
         </div>
         <!--音频信息：作者 -->
         <div
           class="audio-info__author"
           style="height:20px;line-height:20px;color:#606266;"
         >
-          {{ song.ar.map(item => item.name).join("  ") }}
+          {{ song.ar ? song.ar.map(item => item.name).join("  ") : null }}
         </div>
         <!--音频信息：歌词 -->
         <AudioLyric :lyric="song.lyric" :current-time="currentTime" />
@@ -86,13 +96,16 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["playlist", "song", "app"])
+    ...mapGetters(["playlist", "song", "app", "player"]),
     // audioList() {
     //   return this.audio_list.reduce((total, value) => {
     //     total.push(value.src);
     //     return total;
     //   }, []);
     // }
+    cardHeight() {
+      return `calc(100vh - ${this.app.menuHeight}px - ${this.player.height}px - 24px)`;
+    }
   },
   created() {},
   methods: {

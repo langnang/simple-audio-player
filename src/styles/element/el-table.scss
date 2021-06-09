@@ -40,6 +40,10 @@
 .el-table th,
 .el-table tr {
   background-color: #313237;
+
+  &.active {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
 }
 
 .el-table td,
