@@ -8,7 +8,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="系列">
-          <el-radio-group v-model="catlist.activeCat" @change="handleChangeCat">
+          <el-radio-group
+            v-model="catlist.activeCat"
+            @change="handleChangeCat"
+            v-loading="catlist.loading"
+          >
             <el-radio-button :label="-1">{{
               catlist.all.name
             }}</el-radio-button>
@@ -113,6 +117,7 @@ export default {
     return {
       platform: "网易云",
       catlist: {
+        loading: false,
         all: {},
         activeCat: "-1",
         categories: {},
@@ -161,6 +166,7 @@ export default {
       this.getPlaylist();
     },
     getPlaylistCatlist() {
+      this.catlist.loading = true;
       get_playlist_catlist().then(res => {
         if (res == "") {
           setTimeout(this.getPlaylistCatlist(), 1000);
@@ -170,6 +176,7 @@ export default {
         this.catlist.categories = res.categories;
         this.catlist.sub = res.sub;
         this.playlists.pageNum = 1;
+        this.catlist.loading = false;
         this.getTopPlaylist();
       });
     },
@@ -190,7 +197,6 @@ export default {
       if (this.catlist.activeCat == -1 || !this.catlist.activeSub) {
         cat = "全部";
       }
-      console.log(cat, this.catlist.activeSub);
       this.playlists.loading = true;
       get_playlist_top({ cat, pageNum: this.playlists.pageNum }).then(res => {
         this.playlists.tableData = [

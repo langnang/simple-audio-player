@@ -11,6 +11,7 @@
           <el-radio-group
             v-model="toplist.active"
             @change="handleChangeToplist"
+            v-loading="toplist.loading"
           >
             <el-radio-button
               v-for="top in toplist.data"
@@ -76,6 +77,7 @@ export default {
     return {
       platform: "网易云",
       toplist: {
+        loading: false,
         active: "",
         data: []
       },
@@ -107,9 +109,11 @@ export default {
   methods: {
     // 查询排行榜列表
     getToplist() {
+      this.toplist.loading = true;
       get_toplist().then(res => {
         this.toplist.data = res.list;
         this.toplist.active = res.list[0].id;
+        this.toplist.loading = false;
         this.getPlaylist();
       });
     },
