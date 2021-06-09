@@ -227,6 +227,7 @@ export default {
             type: "success",
             message: "添加成功!"
           });
+          this.$emit("play");
         })
         .catch(() => {
           this.$message({
