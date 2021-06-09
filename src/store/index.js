@@ -44,7 +44,7 @@ export default new Vuex.Store({
         ...list
       ]);
     },
-    getSong({ state, commit }, song_id) {
+    getSong({ state, commit, dispatch }, song_id) {
       let song = state.playlist.find(s => s.id == song_id);
       return Promise.all([
         new Promise(resolve => get_song_url(song_id).then(resolve)),
@@ -56,6 +56,10 @@ export default new Vuex.Store({
           lyric: res[1].lrc ? res[1].lrc.lyric : ""
         };
         commit("SET_SONG", song);
+        if (!song.url) {
+          console.log(this._vm.$message.error("未找到音频源"));
+          return dispatch("playNext");
+        }
         return Promise.resolve(song);
       });
     },
