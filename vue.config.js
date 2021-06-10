@@ -1,6 +1,6 @@
 module.exports = {
   outputDir: "dist",
-  publicPath: process.env.NODE_ENV === "production" ? "/AudioPlayer/" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "/simple-audio-player/" : "/",
   devServer: {
     port: 8080, // 自定义端口
     proxy: {
