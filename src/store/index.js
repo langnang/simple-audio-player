@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import persistedState from "vuex-persistedstate";
 import getters from "./getters";
-import { get_lyric, get_song_url } from "@/api";
+import { get_lyric } from "@/api";
 
 Vue.use(Vuex);
 
@@ -45,17 +45,16 @@ export default new Vuex.Store({
       ]);
     },
     getSong({ state, commit, dispatch }, song_id) {
-      let song = state.playlist.find(s => s.id == song_id);
-      return Promise.all([
-        new Promise(resolve => get_song_url(song_id).then(resolve)),
-        new Promise(resolve => get_lyric(song_id).then(resolve))
-      ]).then(res => {
-        song = {
-          ...song,
-          url: res[0].data[0].url,
-          lyric: res[1].lrc ? res[1].lrc.lyric : ""
-        };
-        commit("SET_SONG", song);
+      let index = state.playlist.findIndex(s => s.id === song_id);
+      console.log(index);
+      let song = state.playlist[index];
+      if (song.lyric) {
+        commit("SET_SONG", state.playlist[index]);
+        return Promise.resolve(song);
+      }
+      new Promise(resolve => get_lyric(song_id).then(resolve)).then(res => {
+        state.playlist[index].lyric = res.lrc ? res.lrc.lyric : "";
+        commit("SET_SONG", state.playlist[index]);
         if (!song.url) {
           console.log(this._vm.$message.error("未找到音频源"));
           return dispatch("playNext");

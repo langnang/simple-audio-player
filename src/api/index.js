@@ -34,12 +34,12 @@ export const get_song = ids => {
     }
   });
 };
-export const get_song_url = id => {
+export const get_song_url = ids => {
   return request({
     method: "get",
     url: `${host}/song/player/url`,
     params: {
-      id
+      ids: ids.map(v => v.id).join(",")
     }
   });
 };

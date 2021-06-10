@@ -93,7 +93,8 @@ import {
   get_toplist,
   get_playlist,
   get_artist_list,
-  get_artist_top_songs
+  get_artist_top_songs,
+  get_song_url
 } from "@/api";
 import { mapGetters } from "vuex";
 export default {
@@ -172,8 +173,16 @@ export default {
       this.playlist.loading = true;
       this.playlist.tableData = [];
       get_artist_top_songs(id).then(res => {
-        this.playlist.tableData = res.songs;
-        this.playlist.loading = false;
+        get_song_url(res.songs).then(r => {
+          const total = r.data.reduce((total, value, index) => {
+            if (value.url) {
+              total.push({ ...res.songs[index], url: value.url });
+            }
+            return total;
+          }, []);
+          this.playlist.tableData = total;
+          this.playlist.loading = false;
+        });
       });
     },
     // 查询排行榜列表
