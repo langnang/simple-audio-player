@@ -108,7 +108,8 @@ import {
   get_playlist,
   get_playlist_catlist,
   get_playlist_top,
-  get_song
+  get_song,
+  get_song_url
 } from "@/api";
 import { mapGetters } from "vuex";
 export default {
@@ -213,8 +214,19 @@ export default {
       this.playlist.tableData = [];
       // this.$refs["scroll"].wrap.scrollTop = 0;
       get_playlist(id).then(res => {
-        get_song(res.playlist.trackIds).then(r => {
-          this.playlist.tableData = r.songs;
+        Promise.all([
+          get_song(res.playlist.trackIds),
+          get_song_url(res.playlist.trackIds)
+        ]).then(r => {
+          console.log(r);
+          const total = r[1].data.reduce((total, value, index) => {
+            if (value.url) {
+              total.push({ ...r[0].songs[index], url: value.url });
+            }
+            return total;
+          }, []);
+          console.log(total);
+          this.playlist.tableData = total;
           this.playlist.loading = false;
         });
       });

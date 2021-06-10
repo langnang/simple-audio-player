@@ -69,7 +69,7 @@
   </el-row>
 </template>
 <script>
-import { get_toplist, get_playlist } from "@/api";
+import { get_toplist, get_playlist, get_song, get_song_url } from "@/api";
 import { mapGetters } from "vuex";
 export default {
   name: "toplist",
@@ -121,9 +121,23 @@ export default {
     getPlaylist() {
       const id = this.toplist.active;
       this.playlist.loading = true;
+      this.playlist.tableData = [];
       get_playlist(id).then(res => {
-        this.playlist.tableData = res.playlist.tracks;
-        this.playlist.loading = false;
+        Promise.all([
+          get_song(res.playlist.trackIds),
+          get_song_url(res.playlist.trackIds)
+        ]).then(r => {
+          console.log(r);
+          const total = r[1].data.reduce((total, value, index) => {
+            if (value.url) {
+              total.push({ ...r[0].songs[index], url: value.url });
+            }
+            return total;
+          }, []);
+          console.log(total);
+          this.playlist.tableData = total;
+          this.playlist.loading = false;
+        });
       });
     },
     // 选中平台
