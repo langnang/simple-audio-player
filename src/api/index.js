@@ -85,3 +85,10 @@ export const get_artist_top_songs = id => {
     }
   });
 };
+
+export const link_api_server = () => {
+  return request({
+    method: "options",
+    url: `${host}`
+  });
+};

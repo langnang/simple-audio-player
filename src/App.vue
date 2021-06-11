@@ -1,20 +1,30 @@
 <template>
   <div id="app">
-    <el-menu
-      ref="menu"
-      mode="horizontal"
-      :router="true"
-      :default-active="activeMenu"
-      size="mini"
-      background-color="#313237"
-      text-color="#686f74"
-      active-text-color="#c6c7cb"
-    >
-      <el-menu-item index="/">首页</el-menu-item>
-      <el-menu-item index="/toplist">排行榜</el-menu-item>
-      <el-menu-item index="/playlist">歌单</el-menu-item>
-      <el-menu-item index="/artist">歌手</el-menu-item>
-    </el-menu>
+    <el-row>
+      <el-menu
+        ref="menu"
+        mode="horizontal"
+        :router="true"
+        :default-active="activeMenu"
+        size="mini"
+        background-color="#313237"
+        text-color="#686f74"
+        active-text-color="#c6c7cb"
+      >
+        <el-menu-item index="/">首页</el-menu-item>
+        <el-menu-item index="/toplist">排行榜</el-menu-item>
+        <el-menu-item index="/playlist">歌单</el-menu-item>
+        <el-menu-item index="/artist">歌手</el-menu-item>
+        <el-menu-item index="/repo" style="float:right;">
+          <a
+            href="https://github.com/langnang/simple-audio-player"
+            target="_blank"
+          >
+            GitHub
+          </a>
+        </el-menu-item>
+      </el-menu>
+    </el-row>
     <keep-alive>
       <router-view
         :current-time="currentTime"

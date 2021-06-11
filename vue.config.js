@@ -1,6 +1,7 @@
 module.exports = {
   outputDir: "dist",
-  publicPath: process.env.NODE_ENV === "production" ? "/simple-audio-player/" : "/",
+  publicPath:
+    process.env.NODE_ENV === "production" ? "/simple-audio-player/" : "/",
   devServer: {
     port: 8080, // 自定义端口
     proxy: {
@@ -33,7 +34,7 @@ module.exports = {
   },
   chainWebpack: config => {
     config.plugin("html").tap(args => {
-      args[0].title = "Audio Player"; // 自定义标题
+      args[0].title = "Simple Audio Player - Langnang"; // 自定义标题
       return args;
     });
   }
