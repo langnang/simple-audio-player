@@ -21,7 +21,8 @@
               v-for="top in toplist.data"
               :key="top.id"
               :label="top.id"
-              >{{ top.name }}</el-radio-button
+            >{{ top.name }}
+            </el-radio-button
             >
           </el-radio-group>
         </el-form-item>
@@ -30,13 +31,15 @@
             :disabled="playlist.tableData.length == 0"
             @click="handlePlay"
             type="info"
-            >播放</el-button
+          >播放
+          </el-button
           >
           <el-button
             :disabled="playlist.tableData.length == 0"
             @click="handleAddtoPlaylist"
             type="info"
-            >添加至播放列表</el-button
+          >添加至播放列表
+          </el-button
           >
         </el-form-item>
       </el-form>
@@ -48,7 +51,7 @@
           v-loading="playlist.loading"
           size="mini"
         >
-          <el-table-column type="index" width="50"> </el-table-column>
+          <el-table-column type="index" width="50"></el-table-column>
           <el-table-column prop="name" label="标题" show-overflow-tooltip>
           </el-table-column>
           <el-table-column label="时长" show-overflow-tooltip width="80px">
@@ -63,8 +66,8 @@
           <el-table-column label="歌手" show-overflow-tooltip width="280px">
             <template slot-scope="$scope">
               <span v-for="artist in $scope.row.ar" :key="artist.id">{{
-                artist.name
-              }}</span>
+                  artist.name
+                }}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -73,8 +76,9 @@
   </el-row>
 </template>
 <script>
-import { get_toplist, get_playlist, get_song, get_song_url } from "@/api";
-import { mapGetters } from "vuex";
+import {get_toplist, get_playlist, get_song, get_song_url} from "@/api";
+import {mapGetters} from "vuex";
+
 export default {
   name: "toplist",
   data() {
@@ -131,14 +135,15 @@ export default {
           get_song(res.playlist.trackIds),
           get_song_url(res.playlist.trackIds)
         ]).then(r => {
-          console.log(r);
-          const total = r[1].data.reduce((total, value, index) => {
-            if (value.url) {
-              total.push({ ...r[0].songs[index], url: value.url });
+          // console.log(r);
+          const total = r[0].songs.reduce((total, value) => {
+            const song_url = r[1].data.find(item => item.id == value.id);
+            if (song_url.url) {
+              total.push({...value, url: song_url.url})
             }
             return total;
-          }, []);
-          console.log(total);
+          }, [])
+          // console.log(total);
           this.playlist.tableData = total;
           this.playlist.loading = false;
         });
