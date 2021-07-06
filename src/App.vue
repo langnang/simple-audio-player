@@ -44,6 +44,7 @@
       @ended="onEnded"
       style="margin-top:12px"
     />
+    <iframe src="https://3dqx3.sse.codesandbox.io/" style="display:none" />
   </div>
 </template>
 
