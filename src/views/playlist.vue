@@ -218,14 +218,12 @@ export default {
           get_song(res.playlist.trackIds),
           get_song_url(res.playlist.trackIds)
         ]).then(r => {
-          console.log(r);
           const total = r[1].data.reduce((total, value, index) => {
             if (value.url) {
               total.push({ ...r[0].songs[index], url: value.url });
             }
             return total;
           }, []);
-          console.log(total);
           this.playlist.tableData = total;
           this.playlist.loading = false;
         });

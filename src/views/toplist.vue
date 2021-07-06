@@ -1,7 +1,12 @@
 <template>
   <el-row>
     <el-col :span="24">
-      <el-form label-width="80px" size="mini" ref="form">
+      <el-form
+        label-width="80px"
+        size="mini"
+        ref="form"
+        v-loading="toplist.loading"
+      >
         <el-form-item label="平台">
           <el-radio-group v-model="platform" @change="handleChangePlatform">
             <el-radio-button label="网易云"></el-radio-button>
@@ -11,7 +16,6 @@
           <el-radio-group
             v-model="toplist.active"
             @change="handleChangeToplist"
-            v-loading="toplist.loading"
           >
             <el-radio-button
               v-for="top in toplist.data"

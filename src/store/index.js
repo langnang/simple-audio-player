@@ -46,7 +46,6 @@ export default new Vuex.Store({
     },
     getSong({ state, commit, dispatch }, song_id) {
       let index = state.playlist.findIndex(s => s.id === song_id);
-      console.log(index);
       let song = state.playlist[index];
       if (song.lyric) {
         commit("SET_SONG", state.playlist[index]);
